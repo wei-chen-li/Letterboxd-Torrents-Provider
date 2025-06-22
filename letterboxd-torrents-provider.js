@@ -48,7 +48,7 @@ function formatYTSpath(query) {
 const getMovieInfo = () => {
   const details = document.querySelector(".details");
   const title = details?.querySelector("h1")?.innerText?.replace(/(%[0-9A-F]{2}|\s)+/gi, ' ');
-  const year = details?.querySelector(".releaseyear > a")?.innerText;
+  const year = details?.querySelector(".releasedate > a")?.innerText;
 
   const url = document.querySelector(".micro-button")?.href;
   const imdbID = url.split("/")[4];
