@@ -8,13 +8,28 @@
     },
     "permissions": [
 		"https://letterboxd.com/*",
-		"https://yts.lt/*"
+        "storage"
     ],
+    "browser_action": {
+        "default_popup": "src/options.html"
+    },
+    "options_ui": {
+        "page": "src/options.html",
+        "open_in_tab": true
+    },
     "content_scripts": [
         {
             "matches": [ "https://letterboxd.com/film/*" ],
-            "js": [ "letterboxd-torrents-provider.js" ],
+            "js": [
+                "src/default-sites.js",
+                "src/letterboxd-torrents-provider.js"
+            ],
             "run_at": "document_end"
         }
-    ]
+    ],
+  "applications": {
+    "gecko": {
+      "id": "letterboxd-torrents-provider@example.com"
+    }
+  }
 }

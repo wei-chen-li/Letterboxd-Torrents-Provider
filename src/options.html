@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Letterboxd Torrents Provider Options</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #222;
+    }
+    h2 { border-bottom: 2px solid #eee; padding-bottom: 8px; }
+
+    #site-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 4px 0 20px 0;
+      min-height: 60px;
+    }
+
+    .site-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 12px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    .site-box:active { cursor: grabbing; }
+    .site-box.dragging { opacity: 0.4; }
+    .site-box.drag-over {
+      box-shadow: -3px 0 0 0 #4a90d9 inset;
+      transform: translateX(4px);
+    }
+
+    .site-box img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      object-fit: cover;
+      background: #fff;
+    }
+
+    .site-text { flex: 1; min-width: 0; }
+    .site-text .name {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .site-text .url {
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+
+    .box-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .icon-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      line-height: 1;
+    }
+    .icon-btn:hover { background: #e8e8e8; }
+    .icon-btn.delete:hover { background: #ffdada; }
+
+    .empty-msg { color: #888; font-style: italic; }
+
+    #add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: #4a90d9;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    #add-btn:hover { background: #3a7cc0; }
+
+    /* Modal */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 10px;
+      padding: 20px 24px;
+      width: 380px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .modal h3 { margin-top: 0; }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #555;
+    }
+    .field input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .field input[type="file"] { font-size: 12px; }
+    .icon-preview {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      margin-top: 6px;
+      object-fit: cover;
+      background: #f5f5f5;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    button.primary {
+      background: #4a90d9;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.primary:hover { background: #3a7cc0; }
+    button.secondary {
+      background: #eee;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.secondary:hover { background: #ddd; }
+
+    /* Preset list */
+    .preset-list { list-style: none; padding: 0; margin: 0; }
+    .preset-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .preset-item:hover { background: #f0f4fa; }
+    .preset-item img { width: 24px; height: 24px; border-radius: 5px; }
+    .preset-item .name { font-size: 13px; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <h2>Letterboxd Torrents Provider Options</h2>
+
+  <h3>Custom Sites</h3>
+
+  <div id="site-grid"></div>
+
+  <button id="add-btn" title="Add Site">+</button>
+
+  <!-- Edit / Create modal -->
+  <div class="overlay" id="edit-overlay">
+    <div class="modal">
+      <h3 id="edit-title">Edit Site</h3>
+
+      <div class="field">
+        <label for="edit-name">Name</label>
+        <input type="text" id="edit-name" placeholder="Site name">
+      </div>
+
+      <div class="field">
+        <label for="edit-icon-file">Icon</label>
+        <input type="file" id="edit-icon-file" accept="image/*">
+        <img id="edit-icon-preview" class="icon-preview" alt="icon preview">
+      </div>
+
+      <div class="field">
+        <label for="edit-url">URL</label>
+        <input type="text" id="edit-url" placeholder="https://example.com/search?q=%s">
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary" id="edit-cancel">Cancel</button>
+        <button class="primary" id="edit-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preset picker modal -->
+  <div class="overlay" id="preset-overlay">
+    <div class="modal">
+      <h3>Add Site</h3>
+      <ul class="preset-list" id="preset-list"></ul>
+      <div class="modal-actions">
+        <button class="secondary" id="preset-cancel">Cancel</button>
+        <button class="primary" id="preset-custom">Custom Site…</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="default-sites.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
