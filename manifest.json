@@ -1,16 +1,18 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Letterboxd Watch",
     "description": "Letterboxd extension that provides you links to movie sites",
-    "version": "1.6.0",
+    "version": "1.7.1",
     "icons": {
         "128": "icon128.png"
     },
     "permissions": [
-		"https://letterboxd.com/*",
         "storage"
     ],
-    "browser_action": {
+    "host_permissions": [
+        "https://letterboxd.com/*"
+    ],
+    "action": {
         "default_popup": "src/options.html"
     },
     "options_ui": {
@@ -19,12 +21,22 @@
     },
     "content_scripts": [
         {
-            "matches": [ "https://letterboxd.com/film/*" ],
+            "matches": [
+                "https://letterboxd.com/film/*"
+            ],
             "js": [
                 "src/common.js",
                 "src/letterboxd-watch.js"
             ],
             "run_at": "document_end"
         }
-    ]
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{f22abe9d-e321-4e67-946a-4ca945ae1824}",
+            "data_collection_permissions": {
+                "required": ["none"]
+            }
+        }
+    }
 }

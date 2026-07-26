@@ -7,10 +7,9 @@
 
 ### Chrome/Edge
 1. Download this repository
-2. In `manifest.json`, change the first line to `"manifest_version": 3`
-3. Open Chrome/Edge and go to **chrome://extensions**
-4. Toggle on **Developer mode** checkbox
-5. Click the **Load unpacked extension** button and select the repository folder
+2. Open Chrome/Edge and go to **chrome://extensions**
+3. Toggle on **Developer mode** checkbox
+4. Click the **Load unpacked extension** button and select the repository folder
 
 ## Contributing
 
