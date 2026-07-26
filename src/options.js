@@ -1,14 +1,9 @@
-const STORAGE_KEY = "LetterboxdTorrentProviderSites";
-const storageApi = (typeof browser !== 'undefined' ? browser : chrome).storage.sync;
-
 const gridEl = document.getElementById('site-grid');
 const addBtn = document.getElementById('add-btn');
 
 const editOverlay = document.getElementById('edit-overlay');
 const editTitle = document.getElementById('edit-title');
 const editName = document.getElementById('edit-name');
-const editIconFile = document.getElementById('edit-icon-file');
-const editIconPreview = document.getElementById('edit-icon-preview');
 const editUrl = document.getElementById('edit-url');
 const editSaveBtn = document.getElementById('edit-save');
 const editCancelBtn = document.getElementById('edit-cancel');
@@ -21,26 +16,13 @@ const presetCustomBtn = document.getElementById('preset-custom');
 let editingIndex = null; // null = creating a new site
 let dragSrcIndex = null;
 
-// ---------- Preset icon helper ----------
-// Builds a small base64-encoded SVG "icon" (data URI) so presets ship
-// without needing real binary image assets.
-function makeIcon(letters, bg) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-    <rect width="48" height="48" rx="10" fill="${bg}"/>
-    <text x="24" y="30" font-family="system-ui,sans-serif" font-size="18" font-weight="600"
-      fill="#fff" text-anchor="middle">${letters}</text>
-  </svg>`;
-  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
-}
-
 // ---------- Storage helpers ----------
 async function getSites() {
-  const result = await storageApi.get(STORAGE_KEY);
-  return result[STORAGE_KEY] ?? DEFAULT_SITES;
+  return await getStorageSites() ?? [];
 }
 
 async function setSites(sites) {
-  await storageApi.set({ [STORAGE_KEY]: sites });
+  await setStorageSites(sites);
 }
 
 // ---------- Rendering ----------
@@ -65,7 +47,7 @@ function buildSiteBox(site, index) {
   box.dataset.index = index;
 
   const img = document.createElement('img');
-  img.src = site.icon;
+  img.src = getSiteIcon(site.urlTemplate);
   img.alt = '';
 
   const textWrap = document.createElement('div');
@@ -155,9 +137,6 @@ function openEditModal(index) {
     const site = sites[index];
     editName.value = site.name;
     editUrl.value = site.urlTemplate;
-    editIconPreview.src = site.icon;
-    editIconPreview.dataset.value = site.icon;
-    editIconFile.value = '';
     editOverlay.classList.add('open');
   });
 }
@@ -167,10 +146,6 @@ function openCreateModal(preset) {
   editTitle.textContent = 'Add Site';
   editName.value = preset ? preset.name : '';
   editUrl.value = preset ? preset.urlTemplate : '';
-  const icon = preset ? preset.icon : '';
-  editIconPreview.src = icon;
-  editIconPreview.dataset.value = icon;
-  editIconFile.value = '';
   editOverlay.classList.add('open');
 }
 
@@ -179,23 +154,11 @@ function closeEditModal() {
   editingIndex = null;
 }
 
-editIconFile.addEventListener('change', () => {
-  const file = editIconFile.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    editIconPreview.src = reader.result; // reader.result is already a base64 data URI
-    editIconPreview.dataset.value = reader.result;
-  };
-  reader.readAsDataURL(file);
-});
-
 editCancelBtn.addEventListener('click', closeEditModal);
 
 editSaveBtn.addEventListener('click', async () => {
   const name = editName.value.trim();
   const urlTemplate = editUrl.value.trim();
-  const icon = editIconPreview.dataset.value || '';
 
   if (!name || !urlTemplate) {
     alert('Please fill in both the name and the URL.');
@@ -203,7 +166,7 @@ editSaveBtn.addEventListener('click', async () => {
   }
 
   const sites = await getSites();
-  const record = { name, urlTemplate, icon };
+  const record = { name, urlTemplate };
 
   if (editingIndex === null) {
     sites.push(record);
@@ -224,7 +187,7 @@ function openPresetModal() {
     li.className = 'preset-item';
 
     const img = document.createElement('img');
-    img.src = preset.icon;
+    img.src = getSiteIcon(preset.urlTemplate);
 
     const name = document.createElement('span');
     name.className = 'name';

@@ -27,7 +27,8 @@ function fillTemplate(template, tokens) {
 }
 
 const getServices = async (title, year, imdbID) => {
-  const sites = await getSites();
+  let sites = await getStorageSites();
+  sites = sites?.length ? sites : DEFAULT_SITES.slice(0, 4);
   const query = `${title} ${year}`;
   const tokens = {
     query: query,
@@ -40,8 +41,8 @@ const getServices = async (title, year, imdbID) => {
   return sites.map((site) => {
     const built = {
       name: site.name,
-      icon: site.icon,
-      url: fillTemplate(site.urlTemplate, tokens),
+      icon: getSiteIcon(site.urlTemplate),
+      url: normalizeUrl(fillTemplate(site.urlTemplate, tokens)),
     };
     return built;
   });

@@ -21,7 +21,7 @@
         {
             "matches": [ "https://letterboxd.com/film/*" ],
             "js": [
-                "src/default-sites.js",
+                "src/common.js",
                 "src/letterboxd-torrents-provider.js"
             ],
             "run_at": "document_end"

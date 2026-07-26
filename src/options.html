@@ -93,6 +93,7 @@
       justify-content: center;
       width: 44px;
       height: 44px;
+      margin-left: auto;
       border-radius: 50%;
       border: none;
       background: #4a90d9;
@@ -192,7 +193,7 @@
   </style>
 </head>
 <body>
-  <h2>Letterboxd Torrents Provider Options</h2>
+  <h2>Letterboxd Torrents Provider</h2>
 
   <h3>Custom Sites</h3>
 
@@ -211,14 +212,8 @@
       </div>
 
       <div class="field">
-        <label for="edit-icon-file">Icon</label>
-        <input type="file" id="edit-icon-file" accept="image/*">
-        <img id="edit-icon-preview" class="icon-preview" alt="icon preview">
-      </div>
-
-      <div class="field">
-        <label for="edit-url">URL</label>
-        <input type="text" id="edit-url" placeholder="https://example.com/search?q=%s">
+        <label for="edit-url">URL (supports {{title}}, {{year}}, {{imdb_id}} placeholders)</label>
+        <input type="text" id="edit-url" placeholder="https://www.youtube.com/results?search_query={{query}}">
       </div>
 
       <div class="modal-actions">
@@ -240,7 +235,7 @@
     </div>
   </div>
 
-  <script src="default-sites.js"></script>
+  <script src="common.js"></script>
   <script src="options.js"></script>
 </body>
 </html>
