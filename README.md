@@ -1,11 +1,9 @@
-# Letterboxd Torrents Provider
-
-![screenshot](https://github.com/user-attachments/assets/2081b584-7df3-4cc5-8de7-cb8b9b64454f)
+# Letterboxd Watch
 
 ## Installation
 
 ### Firefox
-<a href="https://addons.mozilla.org/en-US/firefox/addon/letterboxd-torrents/"><img src="https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png" alt="Get Letterboxd Extras for Firefox"></a>
+<a href="https://addons.mozilla.org/en-US/firefox/addon/letterboxd-watch/"><img src="https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png" alt="Get Letterboxd Extras for Firefox"></a>
 
 ### Chrome/Edge
 1. Download this repository

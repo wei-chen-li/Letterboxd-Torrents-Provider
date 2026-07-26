@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "Letterboxd Torrents Provider",
-    "description": "Letterboxd extension that provides you torrents for movies.",
-    "version": "1.5.0",
+    "name": "Letterboxd Watch",
+    "description": "Letterboxd extension that provides you links to movie sites",
+    "version": "1.6.0",
     "icons": {
         "128": "icon128.png"
     },
@@ -22,14 +22,9 @@
             "matches": [ "https://letterboxd.com/film/*" ],
             "js": [
                 "src/common.js",
-                "src/letterboxd-torrents-provider.js"
+                "src/letterboxd-watch.js"
             ],
             "run_at": "document_end"
         }
-    ],
-  "applications": {
-    "gecko": {
-      "id": "letterboxd-torrents-provider@example.com"
-    }
-  }
+    ]
 }

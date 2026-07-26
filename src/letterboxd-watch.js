@@ -1,4 +1,4 @@
-const STORAGE_KEY = "LetterboxdTorrentProviderSites";
+const STORAGE_KEY = "LetterboxdWatchSites";
 const storageApi = (typeof browser !== "undefined" ? browser : chrome).storage.sync;
 
 async function getSites() {

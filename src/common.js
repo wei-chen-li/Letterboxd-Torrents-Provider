@@ -25,7 +25,7 @@ const DEFAULT_SITES = [
   },
 ];
 
-const _STORAGE_KEY = "LetterboxdTorrentProviderSites";
+const _STORAGE_KEY = "LetterboxdWatchSites";
 const _storageApi = (typeof browser !== 'undefined' ? browser : chrome).storage.sync;
 
 async function getStorageSites() {
