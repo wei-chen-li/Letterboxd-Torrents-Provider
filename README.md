@@ -1,5 +1,7 @@
 # Letterboxd Watch
 
+![](screenshot.png)
+
 ## Installation
 
 ### Firefox
